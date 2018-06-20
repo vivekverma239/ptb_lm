@@ -194,8 +194,8 @@ class PTBModel(object):
     tvars = tf.trainable_variables()
     grads, _ = tf.clip_by_global_norm(tf.gradients(self._cost + config.weight_decay*self.l2_loss, tvars),
                                       config.max_grad_norm)
-    # optimizer = tf.train.GradientDescentOptimizer(self._lr)
-    optimizer = tf.train.AdamOptimizer(self._lr,beta1=0)
+    optimizer = tf.train.GradientDescentOptimizer(self._lr)
+#     optimizer = tf.train.AdamOptimizer(self._lr,beta1=0)
 
     self._train_op = optimizer.apply_gradients(
         zip(grads, tvars),
