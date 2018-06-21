@@ -82,6 +82,9 @@ flags.DEFINE_string("rnn_mode", None,
                     "BASIC, and BLOCK, representing cudnn_lstm, basic_lstm, "
                     "and lstm_block_cell classes.")
 
+flags.DEFINE_string("optimizer", 'sgd',
+                    "")
+
 flags.DEFINE_float("clip", 1,
                      "Clip gradient by.")
 
@@ -194,8 +197,11 @@ class PTBModel(object):
     tvars = tf.trainable_variables()
     grads, _ = tf.clip_by_global_norm(tf.gradients(self._cost + config.weight_decay*self.l2_loss, tvars),
                                       config.max_grad_norm)
-    optimizer = tf.train.GradientDescentOptimizer(self._lr)
-#     optimizer = tf.train.AdamOptimizer(self._lr,beta1=0)
+    
+    if config.optimizer == 'sgd':
+      optimizer = tf.train.GradientDescentOptimizer(self._lr)
+    else:
+      optimizer = tf.train.AdamOptimizer(self._lr,beta1=0)
 
     self._train_op = optimizer.apply_gradients(
         zip(grads, tvars),
@@ -442,6 +448,7 @@ class CustomConfig(object):
    batch_size = 64
    vocab_size = 10000
    weight_decay=FLAGS.weight_decay
+   optimizer= FLAGS.optimizer
    rnn_mode = BLOCK
 
 
