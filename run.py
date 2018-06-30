@@ -197,7 +197,7 @@ class PTBModel(object):
     tvars = tf.trainable_variables()
     grads, _ = tf.clip_by_global_norm(tf.gradients(self._cost + config.weight_decay*self.l2_loss, tvars),
                                       config.max_grad_norm)
-    
+
     if config.optimizer == 'sgd':
       optimizer = tf.train.GradientDescentOptimizer(self._lr)
     else:
@@ -260,7 +260,7 @@ class PTBModel(object):
       cell = self._get_lstm_cell(input_size,config, is_training)
       if is_training and config.keep_prob < 1:
         cell = tf.contrib.rnn.DropoutWrapper(
-            cell, output_keep_prob=config.keep_prob,variational_recurrent=True,dtype=tf.float32)
+            cell,state_keep_prob=config.keep_prob, output_keep_prob=config.keep_prob,variational_recurrent=True,dtype=tf.float32)
       if input_size !=output_size:
         cell =  tf.contrib.rnn.OutputProjectionWrapper(cell,output_size,activation=tf.nn.relu)
 
